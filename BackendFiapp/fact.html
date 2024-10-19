@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>   
+    <style>
+        @page {
+        size: A4;
+        margin: 20mm;
+        }
+
+        body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        }
+
+        .invoice {
+        width: 100%;
+        padding: 20mm;
+        box-sizing: border-box;
+        }
+
+        .invoice h1 {
+        text-align: center;
+        font-size: 24px;
+        }
+
+        .invoice p {
+        margin: 0;
+        padding: 5px 0;
+        font-size: 12px;
+        }
+
+        .invoice table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        }
+
+        .invoice table, .invoice th, .invoice td {
+        /* border: 1px solid #ddd; */
+        padding: 8px;
+        }
+
+        .invoice th {
+        border-bottom: 2px  solid #000000;
+        /* background-color: #f2f2f2; */
+        text-align: left;
+        }
+
+        .invoice td {
+        text-align: left;
+        }
+        .dataBill{
+        flex-direction: row;
+        display: flex; 
+        justify-content: space-between;
+        >div p{
+            font-size: large;
+            font-weight: bold;
+        }
+        }
+        .titleBill{
+        flex-direction: row; 
+        display: flex; 
+        justify-content: center;
+        }
+    </style>      
+</head>
+<div class="invoice">
+    <div class="titleBill"style="">
+        <h1>Factura:</h1>
+    </div>
+    <div class="dataBill">
+        <div style="flex-direction: column;">
+            <p>Tienda:</p>
+            <p>Nombre del Cliente:</p>        
+        </div>
+        <div style="flex-direction: column;">            
+            <p>Fecha: </p>
+            <p>Numero de identificación: </p>
+        </div>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Id</th>
+          <th>Producto</th>
+          <th>Und/Peso</th>
+          <th>Precio</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+            <td>1</td>
+            <td>Manzana</td>
+            <td>2</td>
+            <td>$ 1500</td>
+            <td>$ 3000</td>
+        </tr>
+      </tbody>
+    </table>
+    <p style="text-align: end;">Total: $100</p>
+  </div>
+</body>
+</html>
