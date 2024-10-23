@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Modal, TouchableHighlight, Text, TouchableWithoutFeedback, StyleSheet, TouchableOpacity  } from 'react-native';
 import styles from './userActionsBar';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faUser, faBell } from '@fortawesome/free-solid-svg-icons';
+import { faQrcode, faBell } from '@fortawesome/free-solid-svg-icons';
 import { useNavigation } from '@react-navigation/native';
 import ModalProfile from './ModalProfile/ModalProfile';
 export default function UserActionsBar() {
@@ -32,7 +32,7 @@ export default function UserActionsBar() {
             <View style={styles.rowButtons}>
                 <View style={styles.buttonAction}>
                     <TouchableHighlight onPress={handleOpenModalProfile}underlayColor="transparent"style={{ borderRadius: 100, padding: 10 }}>
-                        <FontAwesomeIcon icon={faUser} size={25} color={modalProfileV ? "#1F8169" : "black"} />
+                        <FontAwesomeIcon icon={faQrcode} size={25} color={modalProfileV ? "#1F8169" : "black"} />
                     </TouchableHighlight>
                 </View>
                 <View style={styles.buttonAction}>

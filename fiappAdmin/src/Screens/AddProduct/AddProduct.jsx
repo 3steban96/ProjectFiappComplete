@@ -79,7 +79,7 @@ export default function AddProduct() {
     console.log("AgregarProducto", formData);
     try {
       const token = await AsyncStorage.getItem('authToken');
-      const response = await axios.post('http://192.168.0.5:3000/store/postProducts', formData, {
+      const response = await axios.post('http://192.168.0.6:3000/store/postProducts', formData, {
           headers: {
               'Content-Type': 'multipart/form-data',
               'Authorization': `Bearer ${token}` // Incluir el token en el encabezado
@@ -130,7 +130,7 @@ export default function AddProduct() {
       const storeId = store.id;
 
       try {
-        const response = await axios.get('http://192.168.0.5:3000/store/getSuppliers',{
+        const response = await axios.get('http://192.168.0.6:3000/store/getSuppliers',{
           headers: {
             'Authorization': `Bearer ${token}`, // Incluir el token en el encabezado
             'storeId': storeId 

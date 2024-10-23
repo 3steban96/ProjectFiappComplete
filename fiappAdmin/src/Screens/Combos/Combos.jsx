@@ -23,7 +23,7 @@ export default function Combos({ navigation }) {
       
           try {
             const token = await AsyncStorage.getItem('authToken');
-            const response = await axios.get('http://192.168.0.5:3000/store/getCombos',{
+            const response = await axios.get('http://192.168.0.6:3000/store/getCombos',{
               headers: {
                 'Authorization': `Bearer ${token}`
               },

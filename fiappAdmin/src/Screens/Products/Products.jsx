@@ -33,7 +33,7 @@ export default function Products({ navigation }) {
         return;
       }
 
-      const response = await axios.get('http://192.168.0.5:3000/store/getProducts', {
+      const response = await axios.get('http://192.168.0.6:3000/store/getProducts', {
         headers: {
           'Authorization': `Bearer ${token}`, // Incluye el token en la cabecera
           'storeId': storeId 
@@ -75,7 +75,7 @@ export default function Products({ navigation }) {
         console.error('ID de tienda no disponible en el contexto');
         return;
       }
-      const response = await axios.delete(`http://192.168.0.5:3000/store/deleteProducts`, {
+      const response = await axios.delete(`http://192.168.0.6:3000/store/deleteProducts`, {
         params: { productDelete: selectedProduct.nameProduct }
       },{
         headers: {
@@ -106,7 +106,7 @@ export default function Products({ navigation }) {
         console.error('ID de tienda no disponible en el contexto');
         return;
       }
-      await axios.patch('http://192.168.0.5:3000/updateProduct', {
+      await axios.patch('http://192.168.0.6:3000/updateProduct', {
         productN: updatedProduct.nameProduct,
         purchasePriceP: updatedProduct.purchasePrice,
         salesPriceP: updatedProduct.salePrice

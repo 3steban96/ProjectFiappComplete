@@ -48,7 +48,7 @@ export default function CreatePromotions() {
       const fetchProducts = async () => {
         try {
           const token = await AsyncStorage.getItem('authToken');
-          const response = await axios.get('http://192.168.0.5:3000/store/getProducts',{
+          const response = await axios.get('http://192.168.0.6:3000/store/getProducts',{
             headers: {
               'Authorization': `Bearer ${token}`
             },
@@ -99,7 +99,7 @@ export default function CreatePromotions() {
       };
       console.log("Datos enviados:",promotionData);
       
-      const response = await axios.post('http://192.168.0.5:3000/store/createPromotion', promotionData,{
+      const response = await axios.post('http://192.168.0.6:3000/store/createPromotion', promotionData,{
         headers: {
           'Authorization': `Bearer ${token}`
         },

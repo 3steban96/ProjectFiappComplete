@@ -50,7 +50,7 @@ async function getCustomers(req, res) {
   }
 }
 
-async function getCustomerInvoices(req, res) {
+async function getCustomerInvoicesForStore(req, res) {
   try {
     const { customerId } = req.params;
     const storeId = req.headers.storeid; // Asegúrate de que el storeId venga en el header
@@ -104,6 +104,6 @@ async function deleteCustomer(req, res) {
 }
 module.exports={
     getCustomers,
-    getCustomerInvoices,
+    getCustomerInvoicesForStore,
     deleteCustomer,    
 }

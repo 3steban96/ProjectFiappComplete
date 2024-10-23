@@ -20,7 +20,7 @@ export default function Login({ handleLogin }) {
         }
         try {
             // Enviar solicitud de login al backend
-            const response = await axios.post('http://192.168.0.5:3000/store/login', {
+            const response = await axios.post('http://192.168.0.6:3000/store/login', {
                 email,
                 password
             });

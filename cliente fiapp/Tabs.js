@@ -2,12 +2,13 @@ import React, { useState, useCallback } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { View, Dimensions } from 'react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faHome } from '@fortawesome/free-solid-svg-icons';
+import { faHome, faUser } from '@fortawesome/free-solid-svg-icons';
 import Home from './src/Screens/Home/Home.jsx';
 import '@react-navigation/bottom-tabs';
 import 'react-native-gesture-handler';
 import * as Animatable from 'react-native-animatable';
 import { useFocusEffect } from '@react-navigation/native';
+import DetailsProfile from './src/Screens/DetailsProfile/DetailsProfile.jsx';
 const {width, height} = Dimensions.get("window");
 
 
@@ -57,12 +58,8 @@ export default function Tabs({ navigation }) {
         tabBarIcon: ({ color, size, focused }) => {
           if (route.name === 'Home') {
             return <AnimatedIcon icon={faHome} size={size * 1.3} color={color} isFocused={focused} />;
-          } else if (route.name === 'Combos') {
-            return (
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <AnimatedIcon icon={faHome} size={size * 0.8} color={color} isFocused={focused} />
-              </View>
-            );
+          } else if (route.name === 'DetailsProfile') {
+            return <AnimatedIcon icon={faUser} size={size * 0.8} color={color} isFocused={focused} />
           }
         },
         tabBarActiveTintColor: '#1F8169',
@@ -74,6 +71,11 @@ export default function Tabs({ navigation }) {
         name="Home"
         options={{ headerShown: false }}
         component={Home}
+      />
+      <Tab.Screen
+        name="DetailsProfile"
+        options={{ headerShown: false }}
+        component={DetailsProfile}
       />
     </Tab.Navigator>
     </View>

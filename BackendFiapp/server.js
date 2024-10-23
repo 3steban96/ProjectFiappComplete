@@ -12,8 +12,8 @@ const cron = require('node-cron');
 
 app.use(cors({
     origin: [
-        'http://localhost:8082','exp://192.168.0.5:8081','http://192.168.0.5:8081','https://192.168.0.5:8081','http://192.168.0.5','https://192.168.0.5',
-        'exp://192.168.0.5:8082','http://192.168.0.5:8082','https://192.168.0.5:8082','http://192.168.0.5','https://192.168.0.5'
+        'http://localhost:8082','exp://192.168.0.6:8081','http://192.168.0.6:8081','https://192.168.0.6:8081','http://192.168.0.6','https://192.168.0.6',
+        'exp://192.168.0.6:8082','http://192.168.0.6:8082','https://192.168.0.6:8082','http://192.168.0.6','https://192.168.0.6'
     ], 
     credentials: 'true',
     methods: 'GET,POST,DELETE,PUT',
@@ -25,8 +25,8 @@ app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use('/', route);
 
-// cron.schedule('0 0 * * *', deleteExpiredCombos);
-// cron.schedule('0 0 * * *', revertProductPrices);
+cron.schedule('0 0 * * *', deleteExpiredCombos);
+cron.schedule('0 0 * * *', revertProductPrices);
 // Intentar conectar a la base de datos antes de levantar el servidor
 conn.authenticate()
     .then(() => {

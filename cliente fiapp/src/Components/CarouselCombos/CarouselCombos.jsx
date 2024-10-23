@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
 import axios from 'axios';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Dimensions, View } from 'react-native';
 import { Carousel } from 'react-native-basic-carousel';
 import { ActivityIndicator, Avatar, Card, MD2Colors, Text } from 'react-native-paper';
@@ -30,9 +30,9 @@ const ComboCarousel = ({ storeId }) => {
 
           let url;
           if (storeId) {
-            url = `http://192.168.0.5:3000/customer/${customerId}/combos/store/${storeId}`;
+            url = `http://192.168.0.6:3000/customer/${customerId}/combos/store/${storeId}`;
           } else {
-            url = `http://192.168.0.5:3000/customer/${customerId}/getCombosCustomerAllStore`;
+            url = `http://192.168.0.6:3000/customer/${customerId}/getCombosCustomerAllStore`;
           }
 
           const response = await axios.get(url, {

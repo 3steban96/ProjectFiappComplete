@@ -21,7 +21,7 @@ export default function Login({ handleLogin }) {
         }
         try {
             // Enviar solicitud de login al backend
-            const response = await axios.post('http://192.168.0.5:3000/customer/login', {
+            const response = await axios.post('http://192.168.0.6:3000/customer/login', {
                 email,
                 password
             });
@@ -36,6 +36,10 @@ export default function Login({ handleLogin }) {
             // Almacenar el token y el nombre del usuario en AsyncStorage
             await AsyncStorage.setItem('authToken', token);
             await AsyncStorage.setItem('fullName', customer.fullName); 
+            await AsyncStorage.setItem('idNumber', String(customer.idNumber)); 
+            await AsyncStorage.setItem('email', customer.email); 
+            await AsyncStorage.setItem('phone', String(customer.phone)); 
+            await AsyncStorage.setItem('globalCreditLimit', String(customer.globalCreditLimit)); 
             // Opcional: Ejecutar la función handleLogin si la pasas como prop
             if (handleLogin) {
                 handleLogin(token);

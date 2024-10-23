@@ -11,7 +11,7 @@ const { updateProduct, getSuppliers, postProducts,  getProducts,  deleteProduct 
 const { invoiceGenerated, invoiceGetCustomer } = require('../controllers/Store/invoiceGenerated');
 const { createPromotion, getPromotionsWithProducts } = require('../controllers/Store/controllerPromotions');
 const { postCombos, getCombos } = require('../controllers/Store/controllerCombos');
-const { deleteCustomer,  getCustomers,  getCustomerInvoices } = require('../controllers/Store/customerManagement');
+const { deleteCustomer,  getCustomers,  getCustomerInvoicesForStore } = require('../controllers/Store/customerManagement');
 const { associateCustomerToStore, updateCreditLimit } = require('../controllers/Store/customerStoreManagement');
 
 
@@ -23,12 +23,14 @@ const { getCombosCustomerStore, getCombosForCustomerByStore } = require('../cont
 const { getCombosCustomerAllStore } = require('../controllers/Customer/getCombosCustomer');
 const getStoresAssociatedCustomer = require('../controllers/Customer/getStoresAssociatedCustomer');
 const { getProductsStoreAssociatedCustomer } = require('../controllers/Customer/getProductsStoreAssociatedCustomer');
+const {getInvoicesCustomer} = require('../controllers/Customer/getInvoicesCustomer');
+const { invoiceDownloadCustomer } = require('../controllers/Customer/downloadInvoicesCustomer');
 const router = express.Router();
 
 /*Funciones en funcionamiento*/
 /*Store*/
 router.get('/store/getCustomers', authenticateToken, getCustomers);
-router.get('/store/getCustomerInvoices/:customerId', authenticateToken, getCustomerInvoices);
+router.get('/store/getCustomerInvoicesForStore/:customerId', authenticateToken, getCustomerInvoicesForStore);
 router.get('/store/getProducts', authenticateToken, getProducts);
 router.post('/store/associateCustomer', authenticateToken, associateCustomerToStore);
 router.post('/store/updateCreditLimit', authenticateToken, updateCreditLimit);
@@ -60,7 +62,17 @@ router.get('/customer/getCombosCustomer',authenticateToken, getCombosCustomerSto
 router.get('/customer/:customerId/getCombosCustomerAllStore',authenticateToken, getCombosCustomerAllStore);
 router.get('/customer/:customerId/combos/store/:storeId',authenticateToken, getCombosForCustomerByStore);
 router.get('/customer/getStoresAssociatedCustomer/:customerId',authenticateToken, getStoresAssociatedCustomer);
-router.get('/customer/getProductsStoreAssociatedCustomer/:customerId/:storeId',authenticateToken, getProductsStoreAssociatedCustomer);
+router.get('/customer/getProductsStoreAssociatedCustomer/:customerId/:storeId/:category', authenticateToken, getProductsStoreAssociatedCustomer);
+router.get('/customer/getInvoicesCustomer/:customerId', authenticateToken, getInvoicesCustomer);
+router.get('/customer/downloadInvoiceCustomer/:idNumber/:fileName',authenticateToken, invoiceDownloadCustomer);
+router.get('/customer/download/:filename', (req, res) => {
+    const file = path.join(__dirname, '../controllers/', 'invoices', req.params.filename);
+    res.download(file, err => {
+        if (err) {
+            res.status(500).send('Error al descargar el archivo');
+        }
+    });
+});
 /**/
 
 

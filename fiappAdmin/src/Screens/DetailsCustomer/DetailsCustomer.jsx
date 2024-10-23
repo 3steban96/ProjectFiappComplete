@@ -55,7 +55,7 @@ export default function DetailsCustomer({ route }) {
 
     try {
       const response = await axios.get(
-        `http://192.168.0.5:3000/store/getCustomerInvoices/${customer.id}`,
+        `http://192.168.0.6:3000/store/getCustomerInvoicesForStore/${customer.id}`,
         {
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -82,7 +82,7 @@ const downloadInvoice = async (customerId, fileName) => {
     }
 
     const response = await axios.get(
-      `http://192.168.0.5:3000/store/downloadInvoice/${customerId}/${fileName}`,
+      `http://192.168.0.6:3000/store/downloadInvoice/${customerId}/${fileName}`,
       {
         responseType: 'arraybuffer', // usa arraybuffer en lugar de blob
         headers: {
@@ -116,7 +116,7 @@ const downloadInvoice = async (customerId, fileName) => {
     console.error('Error downloading invoice:', error);
   }
 };
-  const handleCallSupplier = (phone) => {
+  const handleCallCustomer = (phone) => {
     if (!phone) {
       Alert.alert('Número de teléfono no disponible');
       return;
@@ -160,7 +160,7 @@ const downloadInvoice = async (customerId, fileName) => {
                 </View>
                 <View style={{ flexDirection: 'row', flexWrap: 'wrap', width: '100%', justifyContent: 'space-between', marginTop: 10 }}>
                   <Text style={{ flex: 1 }}>Celular:</Text>
-                  <TouchableOpacity onPress={() => handleCallSupplier(customer.phone)}>
+                  <TouchableOpacity onPress={() => handleCallCustomer(customer.phone)}>
                     <Text style={{ textAlign: 'right', flex: 4, flexWrap: 'wrap',textDecorationLine:"underline",flexDirection:'column'  }} numberOfLines={1} ellipsizeMode="tail">
                       {customer.phone}
                     </Text>
@@ -171,12 +171,12 @@ const downloadInvoice = async (customerId, fileName) => {
                   <Text style={{ textAlign: 'right', flex: 1, flexWrap: 'wrap' }} numberOfLines={2} ellipsizeMode="tail">
                     ${customer.stores[0]?.CustomerStore?.storeCreditLimit || 'No disponible'}</Text>
                 </View>
-                <View style={{ flexDirection: 'row', flexWrap: 'wrap', width: '100%', justifyContent: 'space-between', marginTop: 10 }}>
+                {/* <View style={{ flexDirection: 'row', flexWrap: 'wrap', width: '100%', justifyContent: 'space-between', marginTop: 10 }}>
                   <Text style={{ flex: 1 }}>Fecha de pago</Text>
                   <Text style={{ textAlign: 'right', flex: 1, flexWrap: 'wrap' }} numberOfLines={2} ellipsizeMode="tail">
                     12/10/2024
                   </Text>
-                </View>
+                </View> */}
               </Card.Content>
             </Card>
           </View>

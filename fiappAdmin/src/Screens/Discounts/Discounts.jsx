@@ -28,7 +28,7 @@ export default function Discounts({ navigation }) {
             console.error('ID de tienda no disponible en el contexto');
             return;
           }
-          const response = await axios.get('http://192.168.0.5:3000/store/getPromotions',{
+          const response = await axios.get('http://192.168.0.6:3000/store/getPromotions',{
             headers: {
               'Authorization': `Bearer ${token}`, // Incluye el token en la cabecera
               'storeId': storeId 

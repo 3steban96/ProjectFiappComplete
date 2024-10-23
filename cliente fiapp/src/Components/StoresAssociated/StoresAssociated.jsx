@@ -3,14 +3,13 @@ import { View, Text, TouchableOpacity, Image } from 'react-native';
 import styles from './storesAssociatedStyle.js'
 import { Card, Title, Avatar } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
-
 export default function StoresAssociated({ store, customerId }) {
   const navigation = useNavigation(); 
   const { nameStore, id: storeId } = store;
   
   const handleSelectedStore = () => {
     // Aquí también enviamos el nameStore
-    navigation.navigate('ProductsStoreSelected', { storeId, customerId, nameStore });
+    navigation.navigate('StoreSelected', { storeId, customerId, nameStore });
   }
 
   return (

@@ -36,6 +36,10 @@ async function loginCustomer(req, res) {
         customer: {
           id: customer.id,
           fullName: customer.fullName,
+          phone: customer.phone,
+          idNumber: customer.idNumber,
+          typeDocument: customer.typeDocument,
+          globalCreditLimit: customer.globalCreditLimit,
           email: customer.email,          
           qrCode: qrCodeBase64,
         }

@@ -26,22 +26,22 @@ module.exports = (sequelize, DataTypes) => {
       imgProduct: {
         type: DataTypes.BLOB, 
         allowNull: true, 
-    },
-    salePrice: {
-      type: DataTypes.FLOAT,
-      allowNull: false,
-    },
-    amount:{
-      type: DataTypes.FLOAT,
-      allowNull: false,
-    },
-    unitType:{
-      type: DataTypes.ENUM(
-        'Unds', 
-        'Lbs',          
-        ), 
-      allowNull: false,
-    }
+      },
+      salePrice: {
+        type: DataTypes.FLOAT,
+        allowNull: false,
+      },
+      amount:{
+        type: DataTypes.FLOAT,
+        allowNull: false,
+      },
+      unitType:{
+        type: DataTypes.ENUM(
+          'Unds', 
+          'Lbs',          
+          ), 
+        allowNull: false,
+      }
     });
   
     return Products;

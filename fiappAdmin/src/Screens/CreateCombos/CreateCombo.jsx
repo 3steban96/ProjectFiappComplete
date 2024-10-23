@@ -71,7 +71,7 @@ export default function CreateCombo() {
         }    
         try {
           const token = await AsyncStorage.getItem('authToken');
-          const response = await axios.get('http://192.168.0.5:3000/store/getProducts',{
+          const response = await axios.get('http://192.168.0.6:3000/store/getProducts',{
             headers: {
               'Authorization': `Bearer ${token}`
             },
@@ -158,7 +158,7 @@ export default function CreateCombo() {
       }))));
       // Enviar los datos al servidor
       const token = await AsyncStorage.getItem('authToken');
-      const response = await axios.post('http://192.168.0.5:3000/store/createCombo', formData, {
+      const response = await axios.post('http://192.168.0.6:3000/store/createCombo', formData, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'multipart/form-data',

@@ -1,13 +1,12 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFocusEffect } from '@react-navigation/native';
 import React, { useContext, useState } from 'react';
-import { FlatList, StatusBar, Text, View } from 'react-native';
-import styles from './homeStyle.js';
-import UserActionsBar from '../../Components/UserActionsBar/UserActionsBar.jsx';
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { Dimensions, FlatList, StatusBar, Text, View } from 'react-native';
 import ComboCarousel from '../../Components/CarouselCombos/CarouselCombos.jsx';
 import StoresAssociated from '../../Components/StoresAssociated/StoresAssociated.jsx';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import UserActionsBar from '../../Components/UserActionsBar/UserActionsBar.jsx';
 import { UserContext } from '../../UserContext/UserContext.js';
-import { Dimensions } from "react-native";
+import styles from './homeStyle.js';
 
 export default function Home() {
   const { customer } = useContext(UserContext);
@@ -23,7 +22,7 @@ export default function Home() {
           setLoading(true); // Iniciar el estado de carga
           const token = await AsyncStorage.getItem('authToken');
           const customerId = customer.id; 
-          const response = await fetch(`http://192.168.0.5:3000/customer/getStoresAssociatedCustomer/${customerId}`, {
+          const response = await fetch(`http://192.168.0.6:3000/customer/getStoresAssociatedCustomer/${customerId}`, {
             headers: {
               'Authorization': `Bearer ${token}`,
             },

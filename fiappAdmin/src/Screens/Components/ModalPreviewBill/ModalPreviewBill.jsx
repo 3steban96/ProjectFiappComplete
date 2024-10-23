@@ -29,7 +29,7 @@ export default function ModalPreviewBill({ isVisible, onClose, facturaData }) {
         console.error('ID de tienda no disponible en el contexto');
         return;
       }
-      const response = await axios.post('http://192.168.0.5:3000/store/invoiceGenerated', invoiceData,{
+      const response = await axios.post('http://192.168.0.6:3000/store/invoiceGenerated', invoiceData,{
         headers: {
           'Authorization': `Bearer ${token}`, // Incluye el token en la cabecera
           'storeId': storeId,
@@ -37,7 +37,7 @@ export default function ModalPreviewBill({ isVisible, onClose, facturaData }) {
       });
       console.log('Respuesta del servidor:', response.data);
 
-      const downloadUrl = `http://192.168.0.5:3000/store/download/${response.data.fileName}`;
+      const downloadUrl = `http://192.168.0.6:3000/store/download/${response.data.fileName}`;
       console.log('Factura generada en:', downloadUrl);
 
       onClose();

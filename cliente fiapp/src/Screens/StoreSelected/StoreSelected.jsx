@@ -1,8 +1,8 @@
 import React from 'react';
 import { View, ScrollView, TouchableOpacity, Text, Image, StatusBar } from 'react-native';
-import styles from './storeSelectedStyle';
-import ComboCarousel from '../CarouselCombos/CarouselCombos';
-
+import styles from './StoreSelected';
+import ComboCarousel from '../../Components/CarouselCombos/CarouselCombos';
+import { useNavigation } from '@react-navigation/native';
 const categories = [
   { name: 'Frutas y verduras', icon: require('../../../assets/icons/fruits-and-vegetables.png') },
   { name: 'Lacteos y Huevos', icon: require('../../../assets/icons/leche.png') },
@@ -16,13 +16,12 @@ const categories = [
   { name: 'Bebidas alcohólicas', icon: require('../../../assets/icons/jarro-de-cerveza.png') },
 ];
 
-export default function StoreSelected({ onCategorySelect, store }) {
-  const { nameStore, id: storeId } = store;
+export default function StoreSelected({ route }) {
+const navigation = useNavigation();
+const { storeId, nameStore } = route.params;
 
   const handleCategoryProducts = (category) => {
-    if (onCategorySelect) {
-      onCategorySelect(category);
-    }
+    navigation.navigate('ProductsCategorySelected',{category, storeId})
   };
 
   return (
@@ -90,3 +89,7 @@ export default function StoreSelected({ onCategorySelect, store }) {
     </View>
   );
 }
+// Pasamos nameStore como prop a StoreSelected
+{/* <StoreSelected store={{ id: storeId, nameStore }} onCategorySelect={(category) => {
+  console.log(`Categoria seleccionada: ${category}`);
+}} /> */}

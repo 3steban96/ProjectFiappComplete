@@ -58,7 +58,7 @@ export default function SignUp() {
     };
     console.log("Datos enviados:",data)
     try {
-      const response = await axios.post('http://192.168.0.5:3000/customer/register', data, {
+      const response = await axios.post('http://192.168.0.6:3000/customer/register', data, {
         headers: {
           'Content-Type': 'application/json',
         },

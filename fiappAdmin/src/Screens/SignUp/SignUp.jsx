@@ -63,7 +63,7 @@ export default function SignIn() {
     };
     console.log("Datos enviados:",data)
     try {
-      const response = await axios.post('http://192.168.0.5:3000/store/regiter', data, {
+      const response = await axios.post('http://192.168.0.6:3000/store/regiter', data, {
         headers: {
           'Content-Type': 'application/json',
         },
