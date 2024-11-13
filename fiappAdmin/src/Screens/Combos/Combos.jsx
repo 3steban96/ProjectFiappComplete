@@ -23,7 +23,7 @@ export default function Combos({ navigation }) {
       
           try {
             const token = await AsyncStorage.getItem('authToken');
-            const response = await axios.get('http://192.168.0.6:3000/store/getCombos',{
+            const response = await axios.get('http://192.168.0.9:3000/store/getCombos',{
               headers: {
                 'Authorization': `Bearer ${token}`
               },
@@ -32,6 +32,7 @@ export default function Combos({ navigation }) {
 
             // Extraer el array del response
             const combosArray = response.data || [];
+            // console.log("Combos",combosArray)
             setCombos(combosArray);
             setFilteredCombos(combosArray);
           } catch (error) {

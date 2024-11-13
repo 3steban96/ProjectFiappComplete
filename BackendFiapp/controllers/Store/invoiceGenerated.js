@@ -1,11 +1,12 @@
 const puppeteer = require('puppeteer');
 const fs = require('fs');
 const path = require('path');
-const {Purchases, Customers, Products }= require ('../../ConnectionDB/Db.js')
+const {Purchases, Customers, Products,PurchaseProducts,customerStore }= require ('../../ConnectionDB/Db.js')
+const PDFDocument = require("pdfkit-table");
 
 async function invoiceGenerated(req, res) {
     console.log("Datos recibidos:",req.body)
-    const { fullName, idNumber, date, total, products, trusted, nameStore, storeId } = req.body;
+    const { fullName, idNumber, date, total, products, trusted, nameStore, storeId,generatePdf,  } = req.body;
     const htmlContent = `
     <html>
         <head>   
@@ -119,7 +120,7 @@ async function invoiceGenerated(req, res) {
                 <p style="text-align: end;">Total: ${total}</p>
             </div>
         </body>
-    </html>
+    </html>
     `;
     try {
         // Buscar el cliente
@@ -140,9 +141,9 @@ async function invoiceGenerated(req, res) {
         const purchaseId = newPurchase.id;
         console.log(`Generated new purchase with ID: ${purchaseId}`);
 
-        // Actualizar las cantidades de los productos
+        // Guardar productos en PurchaseProducts y actualizar cantidades en Products
         for (const product of products) {
-            const { id, Amount } = product;  // Use `Amount` instead of `quantity`
+            const { id, Amount, TotalPrice } = product;
 
             // Encontrar el producto
             const productRecord = await Products.findOne({ where: { id } });
@@ -158,101 +159,146 @@ async function invoiceGenerated(req, res) {
                 const newAmount = currentAmount - quantityToSubtract;
 
                 if (newAmount < 0) {
-                    // Si la cantidad es insuficiente
                     return res.status(400).send(`Cantidad insuficiente para el producto ${id}`);
                 }
 
-                // Actualizar la cantidad del producto
-                await Products.update(
-                    { amount: newAmount },
-                    { where: { id } }
-                );
+                // Actualizar la cantidad del producto en Products
+                await Products.update({ amount: newAmount }, { where: { id } });
+
+                // Crear el registro en PurchaseProducts
+                await PurchaseProducts.create({
+                    purchaseId: purchaseId,
+                    productId: id,
+                    quantity: Amount,
+                    totalPrice: TotalPrice,
+                });
             } else {
-                // Si el producto no se encuentra
                 return res.status(404).send(`Producto no encontrado con ID ${id}`);
             }
         }
+        // Generar el PDF solo si generatePdf es true
+        let purchaseDocumentPath = null;
+        if (generatePdf) {
+            const browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] });
+            const page = await browser.newPage();
+            await page.setContent(htmlContent, { waitUntil: 'networkidle0', timeout: 60000 });
+            const pdfBuffer = await page.pdf({ format: 'A4', printBackground: true });
+            await browser.close();
 
-        // Generar el PDF
-        const browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] });
-        const page = await browser.newPage();
-        await page.setContent(htmlContent, { waitUntil: 'networkidle0', timeout: 60000 });
-        const pdfBuffer = await page.pdf({
-            format: 'A4',
-            printBackground: true
-        });
+            // Guardar el PDF
+            const fileName = `invoice_${Date.now()}.pdf`;
+            const filePath = path.join(__dirname, '..', 'invoices', fileName);
+            fs.writeFileSync(filePath, pdfBuffer);
+            console.log(`PDF saved to: ${filePath}`);
 
-        await browser.close();
+            // Actualizar la compra con la ruta del documento
+            purchaseDocumentPath = fileName;
+            await Purchases.update(
+                { purchaseDocument: purchaseDocumentPath },
+                { where: { id: purchaseId } }
+            );
 
-        // Guardar el PDF
-        const fileName = `invoice_${Date.now()}.pdf`;
-        const filePath = path.join(__dirname, '..', 'invoices', fileName);
-        fs.writeFileSync(filePath, pdfBuffer);
-        console.log(`PDF saved to: ${filePath}`);
+            console.log(`Database updated for purchaseId: ${purchaseId}`);
+        }
 
-        // Actualizar la compra con la ruta del documento
-        const purchaseDocumentPath = `${fileName}`;
-        await Purchases.update(
-            { purchaseDocument: purchaseDocumentPath },
-            { where: { id: purchaseId } }
-        );
-
-        console.log(`Database updated for purchaseId: ${purchaseId}`);
-
-        res.status(200).json({ url: purchaseDocumentPath, fileName });
+        res.status(200).json({ url: purchaseDocumentPath, fileName: purchaseDocumentPath });
     } catch (error) {
-        console.error('Error generating PDF:', error);
-        res.status(500).send('Error generating PDF');
+        console.error('Error processing purchase:', error);
+        res.status(500).send('Error processing purchase');
     }
 }
 async function invoiceGetCustomer(req, res) {
     const idNumber = req.params.idNumber;
-    const invoiceFileName = req.params.fileName;
-    const storeId = req.user.storeId; // storeId debe estar en req.user
-    console.log("Id recibido de la tienda",storeId)
+    const storeId = req.user.storeId;
+    const purchaseId = req.params.purchaseId;
+    console.log("Datos recibidos:", idNumber, storeId, purchaseId);
+
     if (!storeId) {
-      return res.status(400).json({ error: 'ID de tienda no disponible' });
+        return res.status(400).json({ error: 'ID de tienda no disponible' });
     }
+
     try {
         // Buscar al cliente por idNumber
         const customer = await Customers.findOne({
-            where: { idNumber: idNumber }
+            where: { idNumber }
         });
 
         if (!customer) {
             return res.status(404).json({ error: `No se encontró un cliente con idNumber: ${idNumber}` });
         }
 
-        // Buscar las compras asociadas al customerId del cliente
-        const purchases = await Purchases.findAll({
-            where: { customerId: customer.id } // Buscar por customerId
+        // Buscar la compra específica asociada al customerId
+        const purchase = await Purchases.findOne({
+            where: { customerId: customer.id, id: purchaseId },
+            include: [{
+                model: Products,
+                as: 'products', // Utiliza el alias que definiste en las relaciones (en este caso 'products')
+                through: { attributes: ['quantity', 'totalPrice'] } // Incluye los datos de la tabla intermedia
+            }]
+        });
+        if (!purchase) {
+            return res.status(404).json({ error: `No se encontró la compra con ID: ${purchaseId} para el cliente.` });
+        }
+        // Crear un archivo PDF temporal
+        const doc = new PDFDocument();
+        const tempFilePath = path.join(__dirname, `temp_invoice_${purchaseId}.pdf`);
+        const writeStream = fs.createWriteStream(tempFilePath);
+        doc.pipe(writeStream);
+
+        // Agregar datos de encabezado de la factura
+        doc.fontSize(20).text(`Factura para el cliente: ${customer.fullName}`, { align: 'center' });
+        doc.fontSize(12).text(`ID Cliente: ${customer.idNumber}`);
+        doc.text(`Fecha: ${purchase.purchaseDate}`);
+        doc.text(`Total: ${purchase.total}`);
+        doc.text(`Fiado: ${purchase.trusted}`);
+        doc.moveDown(); // Espacio entre encabezado y tabla
+
+        // Configurar los datos de la tabla
+        const tableData = {
+            headers: ["Producto", "Cantidad", "Precio Unitario", "Total"],
+            rows: purchase.products.map(product => [
+                product.nameProduct,
+                `${product.PurchaseProducts.quantity} ${product.unitType}`,
+                product.salePrice.toFixed(2),
+                product.PurchaseProducts.totalPrice.toFixed(2),
+            ])
+        };
+
+        // Crear la tabla una vez con todos los productos
+        doc.table(tableData, {
+            prepareHeader: () => doc.fontSize(12).font("Helvetica-Bold"),
+            prepareRow: (row, indexColumn, indexRow, rectRow, rectCell) => {
+                doc.font("Helvetica").fontSize(10);
+                if (indexRow % 2 === 0) {
+                    doc.addBackground(rectRow, 'grey', 0.1); // Alternar color de fondo para filas pares
+                }
+            },
+            columnsSize: [200, 100, 100, 100], // Anchos de columnas para la tabla
+            padding: 5,
+            x: 50, // Margen izquierdo
+            y: doc.y + 10, // Posición después del encabezado
         });
 
-        if (purchases.length === 0) {
-            return res.status(404).json({ error:` No se encontraron compras para el cliente con idNumber: ${idNumber}` });
-        }
+        // Finalizar el documento
+        doc.end();
 
-        // Ruta del archivo de la factura
-        const invoicePath = path.join(__dirname, '..', 'invoices', invoiceFileName);
 
-        // Verifica si el archivo existe
-        if (!fs.existsSync(invoicePath)) {
-            return res.status(404).json({ error: `No se encontró el archivo de la factura: ${invoiceFileName}` });
-        }
-
-        res.download(invoicePath, invoiceFileName, (err) => {
-            if (err) {
-                console.error('Error al descargar la factura:', err);
-                return res.status(500).json({ error: 'Error al descargar la factura' });
-            } else {
-                console.log(`Factura ${invoiceFileName} enviada correctamente`);
-            }
+        writeStream.on('finish', () => {
+            res.download(tempFilePath, `invoice_${purchaseId}.pdf`, (err) => {
+                // Eliminar el archivo temporal después de la descarga
+                fs.unlink(tempFilePath, (unlinkErr) => {
+                    if (unlinkErr) console.error('Error al eliminar el archivo temporal:', unlinkErr);
+                });
+                if (err) console.error('Error al enviar la factura:', err);
+            });
         });
+
     } catch (error) {
-        console.error('Error al obtener las facturas:', error);
-        return res.status(500).json({ error: 'Error interno del servidor al obtener las facturas' });
+        console.error('Error al obtener la factura:', error);
+        res.status(500).json({ error: 'Error interno del servidor al obtener la factura' });
     }
 }
+
 
 
 module.exports={

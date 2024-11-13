@@ -1,11 +1,12 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
 import React, { useContext, useState } from 'react';
-import { Dimensions, FlatList, StatusBar, Text, View } from 'react-native';
+import { FlatList, StatusBar, Text, View } from 'react-native';
 import ComboCarousel from '../../Components/CarouselCombos/CarouselCombos.jsx';
 import StoresAssociated from '../../Components/StoresAssociated/StoresAssociated.jsx';
 import UserActionsBar from '../../Components/UserActionsBar/UserActionsBar.jsx';
 import { UserContext } from '../../UserContext/UserContext.js';
+import NotAssociatedStore from '../NotAssociatedStore/NotAssociatedStore.jsx';
 import styles from './homeStyle.js';
 
 export default function Home() {
@@ -13,7 +14,6 @@ export default function Home() {
   const [stores, setStores] = useState([]); // Estado para almacenar las tiendas
   const [loading, setLoading] = useState(true); // Estado para manejar el cargado de datos
   const [error, setError] = useState(null); // Estado para manejar errores
-  const {width, height} = Dimensions.get("window");
 
   useFocusEffect(
     React.useCallback(() => {
@@ -22,7 +22,7 @@ export default function Home() {
           setLoading(true); // Iniciar el estado de carga
           const token = await AsyncStorage.getItem('authToken');
           const customerId = customer.id; 
-          const response = await fetch(`http://192.168.0.6:3000/customer/getStoresAssociatedCustomer/${customerId}`, {
+          const response = await fetch(`http://192.168.0.9:3000/customer/getStoresAssociatedCustomer/${customerId}`, {
             headers: {
               'Authorization': `Bearer ${token}`,
             },
@@ -52,7 +52,13 @@ export default function Home() {
 
   // Mostrar el mensaje de error si ocurre alguno
   if (error) {
-    return <Text>Error: {error}</Text>;
+    return <View style={{height:'100%',width:'100%'}}>
+          <StatusBar />    
+          <UserActionsBar style={{position:"absolute",zIndex:999}} /> 
+          <NotAssociatedStore/>
+    </View>
+
+
   }
 
   return (

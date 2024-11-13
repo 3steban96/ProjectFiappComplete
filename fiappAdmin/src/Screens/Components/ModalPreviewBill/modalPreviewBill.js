@@ -110,7 +110,22 @@ container: {
     flexDirection:'row',
     justifyContent:'space-around',
     paddingTop:20
-  }
-
+  },
+  checkBox:{
+    paddingHorizontal:20
+  },
+  checkboxBase: {
+    width: 24,
+    height: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 4,
+    borderWidth: 2,
+    borderColor: 'black',
+    backgroundColor: 'white',
+  },
+  checkboxChecked: {
+    backgroundColor: 'green',
+  },
 });
 export default styles;

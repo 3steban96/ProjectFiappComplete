@@ -12,7 +12,7 @@ const { invoiceGenerated, invoiceGetCustomer } = require('../controllers/Store/i
 const { createPromotion, getPromotionsWithProducts } = require('../controllers/Store/controllerPromotions');
 const { postCombos, getCombos } = require('../controllers/Store/controllerCombos');
 const { deleteCustomer,  getCustomers,  getCustomerInvoicesForStore } = require('../controllers/Store/customerManagement');
-const { associateCustomerToStore, updateCreditLimit } = require('../controllers/Store/customerStoreManagement');
+const { associateCustomerToStore, updateCreditLimit, addPayment } = require('../controllers/Store/customerStoreManagement');
 
 
 const {registerCustomer} =require('../controllers/Customer/registerCustomer');
@@ -25,6 +25,9 @@ const getStoresAssociatedCustomer = require('../controllers/Customer/getStoresAs
 const { getProductsStoreAssociatedCustomer } = require('../controllers/Customer/getProductsStoreAssociatedCustomer');
 const {getInvoicesCustomer} = require('../controllers/Customer/getInvoicesCustomer');
 const { invoiceDownloadCustomer } = require('../controllers/Customer/downloadInvoicesCustomer');
+const { PushNotifications } = require('../controllers/Store/controllerNotifications');
+const { recoveryPasswordStore, resetPasswordStore } = require('../controllers/Store/recoveryPasswordStore');
+const { recoveryPasswordCustomer, resetPasswordCustomer } = require('../controllers/Customer/recoveryPasswordCustomer');
 const router = express.Router();
 
 /*Funciones en funcionamiento*/
@@ -37,7 +40,7 @@ router.post('/store/updateCreditLimit', authenticateToken, updateCreditLimit);
 router.post('/store/postProducts', authenticateToken, upload.single('imgProduct'), postProducts);
 router.post('/store/login', loginStore);
 router.post('/store/regiter', registerStore);
-router.get('/store/downloadInvoice/:idNumber/:fileName',authenticateToken, invoiceGetCustomer);
+router.get('/store/downloadInvoice/:idNumber/:purchaseId',authenticateToken, invoiceGetCustomer);
 router.get('/store/download/:filename', (req, res) => {
     const file = path.join(__dirname, '../controllers/', 'invoices', req.params.filename);
     res.download(file, err => {
@@ -54,6 +57,10 @@ router.post('/store/createCombo',authenticateToken, upload.single('imgProduct'),
 router.get('/store/getCombos',authenticateToken, getCombos);
 router.get('/store/getPromotions',authenticateToken, getPromotionsWithProducts);
 router.post('/store/invoiceGenerated',authenticateToken, invoiceGenerated);
+router.patch('/store/addPayment',authenticateToken, addPayment);
+router.post('/store/sendNotification',authenticateToken, PushNotifications);
+router.post('/store/recoveryPassword', recoveryPasswordStore);
+router.post('/store/resetPassword', resetPasswordStore);
 
 /*Customers*/
 router.post('/customer/register', registerCustomer);
@@ -73,6 +80,8 @@ router.get('/customer/download/:filename', (req, res) => {
         }
     });
 });
+router.post('/customer/recoveryPassword', recoveryPasswordCustomer);
+router.post('/customer/resetPassword', resetPasswordCustomer);
 /**/
 
 

@@ -42,7 +42,7 @@ export default function RecordPurchase() {
             return;
           }
 
-          const response = await axios.get('http://192.168.0.6:3000/store/getCustomers', {
+          const response = await axios.get('http://192.168.0.9:3000/store/getCustomers', {
             headers: {
               Authorization: `Bearer ${token}`,
               storeId: storeId,
@@ -93,7 +93,7 @@ export default function RecordPurchase() {
             return;
           }
       
-          const response = await axios.get('http://192.168.0.6:3000/store/getProducts', {
+          const response = await axios.get('http://192.168.0.9:3000/store/getProducts', {
             headers: {
               Authorization: `Bearer ${token}`,
               storeId: storeId,
@@ -120,7 +120,7 @@ export default function RecordPurchase() {
 
   const handleSearchProductChange = (text) => {
     setSearchTextProduct(text);
-    console.log("Producto buscado:", text);  // Aquí se imprime lo que el usuario está buscando
+    // console.log("Producto buscado:", text);  // Aquí se imprime lo que el usuario está buscando
 
     const filtered = products.filter((product) =>
       product.nameProduct.toLowerCase().includes(text.toLowerCase())

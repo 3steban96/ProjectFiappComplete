@@ -6,7 +6,7 @@ const QRCode = require('qrcode');
 async function loginStore(req, res) {
     try {
       const { email, password } = req.body;
-  
+      console.log("Datos ingresados",req.body)
       // Verificación de campos obligatorios
       if (!email || !password) {
         return res.status(400).json({ error: 'Por favor, ingrese correo electrónico y contraseña' });

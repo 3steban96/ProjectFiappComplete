@@ -1,16 +1,15 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
+import { Buffer } from 'buffer';
+import { format } from 'date-fns';
+import * as FileSystem from 'expo-file-system';
+import * as MediaLibrary from 'expo-media-library';
+import * as Sharing from 'expo-sharing';
 import React, { useContext } from 'react';
-import { Dimensions, ScrollView, StatusBar, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, Dimensions, ScrollView, StatusBar, Text, TouchableOpacity, View } from 'react-native';
 import { Avatar, Card, DataTable } from 'react-native-paper';
 import { UserContext } from '../../UserContext/UserContext.js';
 import styles from './detailsProfileStyle.js';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios from 'axios';
-import { format } from 'date-fns';
-import { Buffer } from 'buffer';
-import * as FileSystem from 'expo-file-system';
-import * as Sharing from 'expo-sharing';
-import { Alert, Platform } from 'react-native';
-import * as MediaLibrary from 'expo-media-library';
 
 export default function DetailsProfile() {
   const { customer,fullName, email, phone, idNumber, globalCreditLimit } = useContext(UserContext); // Obtener el customer desde el contexto
@@ -43,14 +42,14 @@ export default function DetailsProfile() {
 
       try {
         const response = await axios.get(
-          `http://192.168.0.6:3000/customer/getInvoicesCustomer/${customer.id}`,
+          `http://192.168.0.9:3000/customer/getInvoicesCustomer/${customer.id}`,
           {
             headers: {
               'Authorization': `Bearer ${token}`,
             },
           }
         );
-        console.log("Facturas consultadas", response.data)
+        // console.log("Facturas consultadas", response.data)
         setPurchases(response.data); // Actualizar las facturas obtenidas
       } catch (error) {
         console.error('Error buscando facturas del cliente:', error);
@@ -70,7 +69,7 @@ export default function DetailsProfile() {
   
       const token = await AsyncStorage.getItem('authToken');  
       const response = await axios.get(
-        `http://192.168.0.6:3000/customer/downloadInvoiceCustomer/${customerId}/${fileName}`,
+        `http://192.168.0.9:3000/customer/downloadInvoiceCustomer/${customerId}/${fileName}`,
         {
           responseType: 'arraybuffer', 
           headers: {

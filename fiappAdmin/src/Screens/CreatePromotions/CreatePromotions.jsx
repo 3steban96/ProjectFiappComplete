@@ -48,7 +48,7 @@ export default function CreatePromotions() {
       const fetchProducts = async () => {
         try {
           const token = await AsyncStorage.getItem('authToken');
-          const response = await axios.get('http://192.168.0.6:3000/store/getProducts',{
+          const response = await axios.get('http://192.168.0.9:3000/store/getProducts',{
             headers: {
               'Authorization': `Bearer ${token}`
             },
@@ -78,7 +78,7 @@ export default function CreatePromotions() {
     setSearchTextProduct('');
     setFilteredProducts([]);
   };
-  console.log('Selected product image (base64):', selectedProduct?.imgProduct);
+  // console.log('Selected product image (base64):', selectedProduct?.imgProduct);
 
   const handleSubmit = async () => {
     if (!store || !store.id) {
@@ -97,9 +97,9 @@ export default function CreatePromotions() {
         dateEnd,
         selectedProductName,
       };
-      console.log("Datos enviados:",promotionData);
+      // console.log("Datos enviados:",promotionData);
       
-      const response = await axios.post('http://192.168.0.6:3000/store/createPromotion', promotionData,{
+      const response = await axios.post('http://192.168.0.9:3000/store/createPromotion', promotionData,{
         headers: {
           'Authorization': `Bearer ${token}`
         },

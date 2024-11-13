@@ -10,7 +10,8 @@ export default function Login({ handleLogin }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
-    const { setStore, setNameStore } = useContext(UserContext); 
+    const { setStore, setNameStore } = useContext(UserContext);
+    const [visibleForgotPassword, setVisibleForgotPassword] = useState(false)
     const navigation = useNavigation(); 
 
     const handlePressLogin = async () => {
@@ -20,15 +21,15 @@ export default function Login({ handleLogin }) {
         }
         try {
             // Enviar solicitud de login al backend
-            const response = await axios.post('http://192.168.0.6:3000/store/login', {
+            const response = await axios.post('http://192.168.0.9:3000/store/login', {
                 email,
                 password
             });
             // Manejar la respuesta
             const { token, store } = response.data; // `nameStore` está en `store`
 
-            console.log('Usuario recibido:', store);
-            console.log('Token recibido:', token);
+            // console.log('Usuario recibido:', store);
+            // console.log('Token recibido:', token);
 
             // Establecer la información en el contexto
             setStore({ ...store, storeId: store.id }); 
@@ -48,6 +49,7 @@ export default function Login({ handleLogin }) {
         } catch (error) {
             console.error('Error en el login:', error);
             Alert.alert('Error al iniciar sesión', 'Correo electrónico o contraseña incorrectos.');
+            setVisibleForgotPassword(true);
         }
     };
   return (
@@ -102,10 +104,20 @@ export default function Login({ handleLogin }) {
                     </TouchableOpacity>
                 </View>                
             </View>
+            {visibleForgotPassword &&(
+                <View style={styles.containerRowButtoSignIn}>             
+                    <View style={styles.containerTextButtonSI}>
+                        <TouchableOpacity onPress={ () => navigation.navigate('ForgotPassword') } >
+                            <Text style={styles.buttonSignIn}>¿Haz olvidado la contraseña?</Text> 
+                        </TouchableOpacity>                                       
+                    </View>               
+                </View>
+            )} 
             <View style={styles.containerRowButtoSignIn}>
                 <View style={styles.containerTextButtonSI}>                    
                     <Text>¿No tienes una cuenta? </Text>                    
-                </View>                
+                </View>    
+              
                 <View style={styles.containerTextButtonSI}>
                     <TouchableOpacity onPress={ () => navigation.navigate('SignIn')}>
                         <Text style={styles.buttonSignIn}> Registrate</Text> 

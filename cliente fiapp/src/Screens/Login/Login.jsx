@@ -13,6 +13,7 @@ export default function Login({ handleLogin }) {
     const [showPassword, setShowPassword] = useState(false);
     const { setCustomer, setFullName } = useContext(UserContext);
     const navigation = useNavigation(); 
+    const [visibleForgotPassword, setVisibleForgotPassword] = useState(false)
 
     const handlePressLogin = async () => {
         if (!email || !password) {
@@ -21,7 +22,7 @@ export default function Login({ handleLogin }) {
         }
         try {
             // Enviar solicitud de login al backend
-            const response = await axios.post('http://192.168.0.6:3000/customer/login', {
+            const response = await axios.post('http://192.168.0.9:3000/customer/login', {
                 email,
                 password
             });
@@ -49,6 +50,8 @@ export default function Login({ handleLogin }) {
         } catch (error) {
             console.error('Error en el login:', error);
             Alert.alert('Error al iniciar sesión', 'Correo electrónico o contraseña incorrectos.');
+            setVisibleForgotPassword(true);
+
         }
     };
   return (
@@ -96,6 +99,15 @@ export default function Login({ handleLogin }) {
                         <Text>Iniciar sesión</Text>
                     </TouchableOpacity>
                 </View>
+                {visibleForgotPassword &&(
+                <View style={styles.containerRowButtoSignIn}>             
+                    <View style={styles.containerTextButtonSI}>
+                        <TouchableOpacity onPress={ () => navigation.navigate('ForgotPassword') } >
+                            <Text style={styles.buttonSignIn}>¿Haz olvidado la contraseña?</Text> 
+                        </TouchableOpacity>                                       
+                    </View>               
+                </View>
+                )} 
                 <View style={styles.containerRowButtoSignIn}>
                     <View style={styles.containerTextButtonSI}>                    
                         <Text >¿No tienes una cuenta? </Text>                    

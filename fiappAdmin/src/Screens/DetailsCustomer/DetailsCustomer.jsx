@@ -55,7 +55,7 @@ export default function DetailsCustomer({ route }) {
 
     try {
       const response = await axios.get(
-        `http://192.168.0.6:3000/store/getCustomerInvoicesForStore/${customer.id}`,
+        `http://192.168.0.9:3000/store/getCustomerInvoicesForStore/${customer.id}`,
         {
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -71,7 +71,8 @@ export default function DetailsCustomer({ route }) {
 
   fetchCustomerInvoices();
 }, [customer.id, store.id]);
-const downloadInvoice = async (customerId, fileName) => {
+
+const downloadInvoice = async (customerId, purchaseId) => {
   try {
     const token = await AsyncStorage.getItem('authToken');
     const storeId = store.id;
@@ -82,30 +83,26 @@ const downloadInvoice = async (customerId, fileName) => {
     }
 
     const response = await axios.get(
-      `http://192.168.0.6:3000/store/downloadInvoice/${customerId}/${fileName}`,
+      `http://192.168.0.9:3000/store/downloadInvoice/${customerId}/${purchaseId}`,
       {
-        responseType: 'arraybuffer', // usa arraybuffer en lugar de blob
+        responseType: 'arraybuffer', // Usa 'arraybuffer' en lugar de 'base64'
         headers: {
-          'Authorization': `Bearer ${token}`, // Incluye el token en la cabecera
+          'Authorization': `Bearer ${token}`,
           'storeId': storeId,
         },
       }
     );
 
-    // Convertir el arraybuffer a base64
-    const base64 = Buffer.from(response.data, 'binary').toString('base64');
+    // Convierte arraybuffer a base64
+    const base64Data = Buffer.from(response.data, 'binary').toString('base64');
+    const fileUri = `${FileSystem.documentDirectory}invoice_${purchaseId}.pdf`;
 
-    // Obtener la carpeta de descargas predeterminada en Android
-    const fileUri = `${FileSystem.documentDirectory}download/${fileName}`;
-
-    // Escribir el archivo en la carpeta de descargas
-    await FileSystem.writeAsStringAsync(fileUri, base64, {
+    // Guarda el archivo en el sistema de archivos
+    await FileSystem.writeAsStringAsync(fileUri, base64Data, {
       encoding: FileSystem.EncodingType.Base64,
     });
 
-    console.log('Factura descargada en:', fileUri);
-
-    // Abrir la carpeta de descargas para ver el archivo
+    // Comparte el archivo si la funcionalidad está disponible
     if (await Sharing.isAvailableAsync()) {
       await Sharing.shareAsync(fileUri);
     } else {
@@ -116,6 +113,7 @@ const downloadInvoice = async (customerId, fileName) => {
     console.error('Error downloading invoice:', error);
   }
 };
+
   const handleCallCustomer = (phone) => {
     if (!phone) {
       Alert.alert('Número de teléfono no disponible');
@@ -171,6 +169,16 @@ const downloadInvoice = async (customerId, fileName) => {
                   <Text style={{ textAlign: 'right', flex: 1, flexWrap: 'wrap' }} numberOfLines={2} ellipsizeMode="tail">
                     ${customer.stores[0]?.CustomerStore?.storeCreditLimit || 'No disponible'}</Text>
                 </View>
+                <View style={{ flexDirection: 'row', flexWrap: 'wrap', width: '100%', justifyContent: 'space-between', marginTop: 10 }}>
+                  <Text style={{ flex: 1 }}>Total compras:</Text>
+                  <Text style={{ textAlign: 'right', flex: 1, flexWrap: 'wrap' }} numberOfLines={2} ellipsizeMode="tail">
+                    ${customer.totalPurchases || 'No disponible'}</Text>
+                </View>
+                <View style={{ flexDirection: 'row', flexWrap: 'wrap', width: '100%', justifyContent: 'space-between', marginTop: 10 }}>
+                  <Text style={{ flex: 1 }}>Total fiado:</Text>
+                  <Text style={{ textAlign: 'right', flex: 1, flexWrap: 'wrap' }} numberOfLines={2} ellipsizeMode="tail">
+                    ${customer.totalTrustedPurchases || 'No disponible'}</Text>
+                </View>
                 {/* <View style={{ flexDirection: 'row', flexWrap: 'wrap', width: '100%', justifyContent: 'space-between', marginTop: 10 }}>
                   <Text style={{ flex: 1 }}>Fecha de pago</Text>
                   <Text style={{ textAlign: 'right', flex: 1, flexWrap: 'wrap' }} numberOfLines={2} ellipsizeMode="tail">
@@ -201,7 +209,7 @@ const downloadInvoice = async (customerId, fileName) => {
                 <DataTable.Cell textStyle={{textAlign:'center',width:'100%'}}>{purchase.trusted ? 'Sí' : 'No'}</DataTable.Cell>
                 <DataTable.Cell textStyle={{textAlign:'center',width:'100%'}}>{purchase.total}</DataTable.Cell>
                 <DataTable.Cell textStyle={{textAlign:'center',width:'100%'}}>
-                <TouchableOpacity onPress={() => downloadInvoice(customer.idNumber, purchase.purchaseDocument)}>
+                <TouchableOpacity onPress={() => downloadInvoice(customer.idNumber, purchase.id)}>
                   <Text style={{ color: 'blue' }}>Descargar</Text>
                 </TouchableOpacity>
                 </DataTable.Cell>

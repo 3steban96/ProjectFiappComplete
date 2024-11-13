@@ -9,6 +9,7 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 const { v4: uuidv4 } = require('uuid');
 const QRCode = require('qrcode');
+const sequelize = require('sequelize');
 
 async function getCustomers(req, res) {
   try {
@@ -19,26 +20,33 @@ async function getCustomers(req, res) {
       return res.status(400).json({ error: 'Id de la tienda no disponible' });
     }
 
-    // Incluyendo también el storeCreditLimit de la tabla intermedia CustomerStore
     const dbCustomers = await Customers.findAll({
-      attributes: { exclude: ['password'] },
+      attributes: {
+        include: [
+          'id', 'fullName', // Incluye campos básicos que no están en agregaciones
+          [sequelize.fn('SUM', sequelize.col('purchases.total')), 'totalPurchases'],
+          [
+            sequelize.fn('SUM', sequelize.literal(`CASE WHEN purchases.trusted THEN purchases.total ELSE 0 END`)),
+            'totalTrustedPurchases'
+          ]
+        ],
+        exclude: ['password'],
+      },
       include: [
         {
           model: Store,
-          as: 'stores', // Relación a través de CustomerStore
+          as: 'stores',
           where: { id: storeId },
-          through: { 
-            attributes: ['storeCreditLimit'] // Atributos de la tabla CustomerStore
-          }
+          through: { attributes: ['storeCreditLimit'] }
         },
         {
-          model: Store,
-          as: 'ratedStores', // Relación a través de CustomerRatings
-          through: { 
-            attributes: ['rating'] // Atributos de la tabla CustomerRatings
-          }
+          model: Purchases,
+          as: 'purchases',
+          where: { storeId: storeId },
+          attributes: [] // Excluir 'total' aquí ya que se usa en agregaciones
         }
       ],
+      group: ['Customers.id','stores.id', 'stores.CustomerStore.id','Customers.fullName', 'stores.CustomerStore.storeCreditLimit'], // Agrupar por atributos de Customers y CustomerStore
       order: [['fullName', 'ASC']],
     });
 
@@ -49,6 +57,7 @@ async function getCustomers(req, res) {
     return res.status(500).json({ error: 'Error interno del servidor' });
   }
 }
+
 
 async function getCustomerInvoicesForStore(req, res) {
   try {

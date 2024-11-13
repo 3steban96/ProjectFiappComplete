@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "571378245841",
+    "project_id": "fiapp-84951",
+    "storage_bucket": "fiapp-84951.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:571378245841:android:c1ff1f96f05970df2f25f0",
+        "android_client_info": {
+          "package_name": "com.company.fiapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAac1p5mn1e1icJk4rwM0GcRWtaV_e-ELY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -46,6 +46,11 @@ export const UserProvider = ({ children }) => {
         if (phone) await AsyncStorage.setItem('phone', phone); // Guardar el teléfono
         if (idNumber) await AsyncStorage.setItem('idNumber', idNumber); // Guardar el teléfono
         if (globalCreditLimit) await AsyncStorage.setItem('globalCreditLimit', globalCreditLimit); // Guardar el teléfono
+        // console.log("fullname",fullName)
+        // console.log("email",email)
+        // console.log("phone",phone)
+        // console.log("idNumber",idNumber)
+        // console.log("globalCredit",globalCreditLimit)
       } catch (e) {
         console.error('Error saving data to storage', e);
       }

@@ -28,7 +28,7 @@ export default function Discounts({ navigation }) {
             console.error('ID de tienda no disponible en el contexto');
             return;
           }
-          const response = await axios.get('http://192.168.0.6:3000/store/getPromotions',{
+          const response = await axios.get('http://192.168.0.9:3000/store/getPromotions',{
             headers: {
               'Authorization': `Bearer ${token}`, // Incluye el token en la cabecera
               'storeId': storeId 
@@ -88,8 +88,8 @@ export default function Discounts({ navigation }) {
                     <Text style={styles.dataDescription}>{promotion.description}</Text>
                     
                     <View style={styles.dataRowPrice}>
-                      <Text style={styles.dataPriceBefore}>Antes: ${Math.round(promotion.products[0].priceBeforePromotion)}</Text>
-                      <Text style={styles.dataPriceNow}>Ahora: ${Math.round(promotion.products[0].salePrice)}</Text>
+                      <Text style={styles.dataPriceBefore}>Antes: ${Math.round(promotion.products[0].salePrice)}</Text>
+                      <Text style={styles.dataPriceNow}>Ahora: ${Math.round(promotion.products[0].pricePromotion)}</Text>
                     </View>
                   </View>
                   

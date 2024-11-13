@@ -1,5 +1,5 @@
 const { where } = require('sequelize');
-const { Store, Customers, CustomerStore }= require ('../../ConnectionDB/Db.js')
+const { Store, Customers, CustomerStore, Payment }= require ('../../ConnectionDB/Db.js')
 
 async function associateCustomerToStore(req, res) {
   try {
@@ -76,50 +76,72 @@ async function calculateTotalStoreCredit(customerId) {
   const associations = await CustomerStore.findAll({ where: { customerId } });
   return associations.reduce((sum, association) => sum + association.storeCreditLimit, 0);
 }
-async function rateCustomer(req, res) {
-try {
-    const { storeId, customerId, rating } = req.body;
+// Función para registrar un abono y actualizar el saldo pendiente
+async function addPayment(req, res) {
+  try {
+    const { storeId, idNumber, paymentAmount, paymentMethod, paymentFile } = req.body;
 
-    if (!storeId || !customerId || !rating) {
-    return res.status(400).json({ error: "Faltan campos obligatorios" });
+    if (!storeId || !idNumber || paymentAmount == null || !paymentMethod) {
+      return res.status(400).json({ error: "Faltan campos obligatorios en la solicitud (storeId, idNumber, paymentAmount, paymentMethod)" });
     }
 
-    // Validar si la tienda y el cliente existen
+    // Verifica la existencia de la tienda y el cliente
     const store = await Store.findByPk(storeId);
-    const customer = await Customers.findByPk(customerId);
+    const customer = await Customers.findOne({ where: { idNumber } });
 
     if (!store || !customer) {
-    return res.status(404).json({ error: "Tienda o cliente no encontrado" });
+      return res.status(404).json({ error: "Tienda o cliente no encontrado" });
     }
 
-    // Verificar si ya existe una calificación previa
-    const existingRating = await CustomerRatings.findOne({
-    where: { storeId, customerId },
+    // Encuentra la asociación entre el cliente y la tienda
+    const customerStore = await CustomerStore.findOne({
+      where: {
+        storeId: store.id,
+        customerId: customer.id,
+      },
     });
 
-    if (existingRating) {
-    // Si ya existe una calificación, puedes actualizarla
-    existingRating.rating = rating;
-    await existingRating.save();
-    return res.status(200).json({ message: "Calificación actualizada exitosamente" });
+    if (!customerStore) {
+      return res.status(404).json({ error: "El cliente no está asociado a esta tienda" });
     }
 
-    // Si no existe una calificación previa, crear una nueva
-    await CustomerRatings.create({
-    storeId,
-    customerId,
-    rating,
+    // Calcula el nuevo saldo pendiente
+    const newBalance = customerStore.storeCreditBalance - paymentAmount;
+
+    // Verifica que el saldo no sea negativo
+    if (newBalance < 0) {
+      return res.status(400).json({ error: "El abono excede el saldo pendiente" });
+    }
+
+    // Actualiza el saldo en la tabla CustomerStore
+    customerStore.storeCreditBalance = newBalance;
+    await customerStore.save();
+
+    // Crea un nuevo registro de pago en la tabla Payment
+    const payment = await Payment.create({
+      customerStoreId: customerStore.id,
+      paymentAmount,
+      paymentMethod,
+      datePayment: new Date(),
+      paymentFile, // Se espera que el archivo esté en base64 o buffer
     });
 
-    return res.status(201).json({ message: "Calificación creada exitosamente" });
-} catch (error) {
-    console.error('Error al calificar cliente:', error);
+    return res.status(200).json({
+      message: "Abono registrado exitosamente",
+      newBalance,
+      payment: {
+        paymentAmount: payment.paymentAmount,
+        paymentMethod: payment.paymentMethod,
+        datePayment: payment.datePayment,
+      }
+    });
+  } catch (error) {
+    console.error('Error al registrar el abono:', error);
     return res.status(500).json({ error: 'Error interno del servidor' });
+  }
 }
-} 
-
 module.exports={
   associateCustomerToStore,
   updateCreditLimit,
-  rateCustomer, 
+  addPayment
 }

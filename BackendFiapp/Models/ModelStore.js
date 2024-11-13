@@ -29,6 +29,14 @@ module.exports = (sequelize, DataTypes) => {
     password: {
       type: DataTypes.STRING,
     },
+    resetPasswordExpires: {
+      type: DataTypes.DATE, // Fecha de expiración del token
+      allowNull: true,
+    },
+    recoveryCode: {
+      type: DataTypes.STRING, // Agregamos el campo recoveryCode
+      allowNull: true,
+    },
   });
   Store.beforeCreate(async (store, options) => {
     if (store.password) {

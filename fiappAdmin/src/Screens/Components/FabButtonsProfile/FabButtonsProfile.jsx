@@ -35,7 +35,7 @@ export default function FabButtondProfile ({storeId, idNumber}) {
                   color:"white",
                   style: { backgroundColor: '#FF6347' },
                   label: 'Reportar',
-                  onPress: () => console.log('Pressed star'),
+                  // onPress: () => console.log('Pressed star'),
                 },
                 {                    
                   icon: 'credit-card-edit',
@@ -49,7 +49,7 @@ export default function FabButtondProfile ({storeId, idNumber}) {
                   color:"white",
                   style: { backgroundColor: 'green' },
                   label: 'Abonar',
-                  onPress: () => console.log('Pressed notifications'),
+                  // onPress: () => console.log('Pressed notifications'),
                 },
               ]
             }

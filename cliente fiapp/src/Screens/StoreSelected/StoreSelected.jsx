@@ -18,10 +18,10 @@ const categories = [
 
 export default function StoreSelected({ route }) {
 const navigation = useNavigation();
-const { storeId, nameStore } = route.params;
-
+const { storeId, nameStore, phone } = route.params;
+console.log("Whatsapp de la tienda",phone)
   const handleCategoryProducts = (category) => {
-    navigation.navigate('ProductsCategorySelected',{category, storeId})
+    navigation.navigate('ProductsCategorySelected',{category, storeId, phone})
   };
 
   return (
@@ -89,7 +89,3 @@ const { storeId, nameStore } = route.params;
     </View>
   );
 }
-// Pasamos nameStore como prop a StoreSelected
-{/* <StoreSelected store={{ id: storeId, nameStore }} onCategorySelect={(category) => {
-  console.log(`Categoria seleccionada: ${category}`);
-}} /> */}

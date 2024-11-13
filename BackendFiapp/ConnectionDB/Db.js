@@ -35,8 +35,19 @@ let capsEntries = entries.map((entry) => [entry[0][0].toUpperCase() + entry[0].s
 sequelize.models = Object.fromEntries(capsEntries);
 
 // Extraer los modelos importados como propiedades
-const { Store, Customers, Products, Supplier, Purchases, Promotions, ProductPromotions, Combos, ComboProducts } = sequelize.models;
+const { Store, Customers, CustomerStore, Payment,Products, Supplier, Purchases, Promotions, ProductPromotions, Combos, ComboProducts } = sequelize.models;
 
+CustomerStore.hasMany(Payment, {
+  foreignKey: 'customerStoreId',
+  as: 'payments',
+  onDelete: 'CASCADE'
+});
+
+Payment.belongsTo(CustomerStore, {
+  foreignKey: 'customerStoreId',
+  as: 'customerStore',
+  onDelete: 'CASCADE'
+});
 // Relación muchos a muchos entre Customers y Store
 Customers.belongsToMany(Store, {
   through: 'CustomerStore',
@@ -75,12 +86,8 @@ Store.belongsToMany(Customers, {
   onUpdate: 'CASCADE',
 });  
 // Relación uno a muchos entre Customers y Purchases
-Customers.hasMany(Purchases, { foreignKey: 'customerId', as: 'purchases' });
-Purchases.belongsTo(Customers, { foreignKey: 'customerId', as: 'customer' });
-
-// Relación entre Store y Products
-Store.hasMany(Products, { foreignKey: 'storeId' });
-Products.belongsTo(Store, { foreignKey: 'storeId' });
+Store.hasMany(Products, { foreignKey: 'storeId', as: 'prodcuts' });
+Products.belongsTo(Store, { foreignKey: 'storeId', as: 'store' });
 
 // Relación uno a muchos entre Store y Combos
 Store.hasMany(Combos, { foreignKey: 'storeId', as: 'combos' });
@@ -93,6 +100,12 @@ Promotions.belongsTo(Store, { foreignKey: 'storeId', as: 'store' });
 // Relación uno a muchos entre Store y Purchases
 Store.hasMany(Purchases, { foreignKey: 'storeId', as: 'purchases' });
 Purchases.belongsTo(Store, { foreignKey: 'storeId', as: 'stores' });
+// Relación uno a muchos entre Customers y Purchases
+Customers.hasMany(Purchases, { foreignKey: 'customerId', as: 'purchases' });
+Purchases.belongsTo(Customers, { foreignKey: 'customerId', as: 'customer' });
+// Relación muchos a muchos entre Products y Purchases
+Purchases.belongsToMany(Products, { through: 'PurchaseProducts', foreignKey: 'purchaseId', as: 'products' });
+Products.belongsToMany(Purchases, { through: 'PurchaseProducts', foreignKey: 'productId', as: 'purchases' });
 
 // Relación muchos a muchos entre Products y Supplier
 Products.belongsToMany(Supplier, { through: 'ProductSupplier' });

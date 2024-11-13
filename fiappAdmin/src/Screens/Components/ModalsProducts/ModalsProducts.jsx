@@ -7,6 +7,7 @@ export default function ModalsProducts({ isVisible, onClose, productName, priceP
   const [amount, setAmount] = useState('1');
   const [selectedUnit, setSelectedUnit] = useState('unds');
   const [totalPrice, setTotalPrice] = useState(0);
+  
   useEffect(() => {
     // Restablecer el estado del input cada vez que se abre el modal
     setAmount('');

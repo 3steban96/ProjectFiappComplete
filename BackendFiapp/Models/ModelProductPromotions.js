@@ -1,6 +1,6 @@
 module.exports = (sequelize, DataTypes) => {
     const ProductPromotions = sequelize.define('ProductPromotions', {
-      priceBeforePromotion: {
+      pricePromotion: {
         type: DataTypes.FLOAT,
         allowNull: false,
       },

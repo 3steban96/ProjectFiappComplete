@@ -137,7 +137,7 @@ async function getCombos(req, res) {
 async function postCombos(req, res) {
   console.log(req.body);
   try {
-    const { name, description, startDate, endDate, discount, productIds } = req.body;
+    const { name, description, startDate, endDate, discount, totalPriceProducts, totalPriceCombo, productIds } = req.body;
 
     // Verificar si req.user tiene storeId
     if (!req.user || !req.user.storeId) {
@@ -146,7 +146,7 @@ async function postCombos(req, res) {
     const storeId = req.user.storeId;
 
     // Validar los datos de entrada
-    if (!name || !productIds) {
+    if (!name || !totalPriceProducts || !productIds) {
       return res.status(400).json({ error: 'Invalid input data' });
     }
 
@@ -175,14 +175,6 @@ async function postCombos(req, res) {
       return res.status(400).json({ error: 'One or more product IDs are invalid' });
     }
 
-    // Calcular el precio total de los productos sin aplicar promociones o descuentos
-    const totalPriceProducts = products.reduce((acc, product) => {
-      return acc + product.price;  // Asume que 'price' es el precio original
-    }, 0);
-
-    // Aplicar el descuento ingresado por el usuario
-    const totalPriceCombo = totalPriceProducts - (totalPriceProducts * (discount / 100));
-
     // Procesar la imagen
     let imgProductBase64 = null;
     if (req.file) {
@@ -198,8 +190,8 @@ async function postCombos(req, res) {
       startDate,
       endDate,
       discount,
-      totalPriceProducts,  // Total original de los productos sin promociones
-      totalPriceCombo,     // Total del combo con el descuento aplicado
+      totalPriceProducts,
+      totalPriceCombo,
       storeId
     });
 
@@ -224,8 +216,8 @@ async function postCombos(req, res) {
 }
 
 const deleteExpiredCombos = async () => {
+  console.log('Ejecutando deleteExpiredCombos');  // Log adicional
   try {
-    // Obtener combos expirados
     const expiredCombos = await Combos.findAll({
       where: {
         endDate: {
@@ -240,7 +232,6 @@ const deleteExpiredCombos = async () => {
       },
     });
 
-    // Eliminar combos y sus relaciones
     await Promise.all(expiredCombos.map(async (combo) => {
       await combo.destroy();
     }));
@@ -251,8 +242,10 @@ const deleteExpiredCombos = async () => {
   }
 };
 
-// Programar el cron job para ejecutarse diariamente a medianoche
-cron.schedule('0 0 * * *', deleteExpiredCombos);
+cron.schedule('0 0 * * *', () => {
+  console.log('Cron job deleteExpiredCombos programado');
+  deleteExpiredCombos();
+});
 
 module.exports = {
   deleteExpiredCombos,

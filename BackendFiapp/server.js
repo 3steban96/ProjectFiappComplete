@@ -12,8 +12,8 @@ const cron = require('node-cron');
 
 app.use(cors({
     origin: [
-        'http://localhost:8082','exp://192.168.0.6:8081','http://192.168.0.6:8081','https://192.168.0.6:8081','http://192.168.0.6','https://192.168.0.6',
-        'exp://192.168.0.6:8082','http://192.168.0.6:8082','https://192.168.0.6:8082','http://192.168.0.6','https://192.168.0.6'
+        'http://localhost:8081','exp://192.168.0.9:8081','http://192.168.0.9:8081','https://192.168.0.9:8081','http://192.168.0.9','https://192.168.0.9',
+        'exp://192.168.0.9:8082','http://192.168.0.9:8082','https://192.168.0.9:8082','http://192.168.0.9','https://192.168.0.9'
     ], 
     credentials: 'true',
     methods: 'GET,POST,DELETE,PUT',
@@ -21,8 +21,8 @@ app.use(cors({
 }));
 
 app.use(express.json());
-app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
-app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ extended: true, limit: '90mb' }));
+app.use(bodyParser.json({ limit: '90mb' }));
 app.use('/', route);
 
 cron.schedule('0 0 * * *', deleteExpiredCombos);
@@ -31,8 +31,10 @@ cron.schedule('0 0 * * *', revertProductPrices);
 conn.authenticate()
     .then(() => {
         conn.sync({ force: false }).then(() => {
-            app.listen(port, () => {
+            app.listen(port, async () => {
                 console.log(`Server listening at ${port}`); // eslint-disable-line no-console
+                await deleteExpiredCombos();
+                await revertProductPrices();
             });
         });
     })

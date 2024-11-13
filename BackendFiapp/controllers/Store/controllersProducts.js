@@ -80,7 +80,7 @@ async function postProducts(req, res) {
 
     // Obtener el ID de la tienda que ha iniciado sesión
     const storeId = req.user.storeId; // Asegúrate de que este valor provenga de la autenticación
-
+    console.log("storeId",storeId)
     // Verificar si el producto ya existe en esa tienda
     let product = await Products.findOne({
       where: { nameProduct: nameP, storeId: storeId } // Buscar por nombre y tienda
@@ -230,7 +230,7 @@ async function deleteProduct(req, res) {
   }
 }
 async function updateProduct(req, res) {
-  const { productN, purchasePriceP, salesPriceP, storeId } = req.body;
+  const { productN, purchasePriceP, salesPriceP, storeId, amountP } = req.body;
 
   if (!storeId || !productN) {
       return res.status(400).json({ error: 'El storeId y el nombre del producto son requeridos' });
@@ -238,7 +238,8 @@ async function updateProduct(req, res) {
 
   const updateDataProduct = {
       purchasePrice: purchasePriceP,
-      salePrice: salesPriceP
+      salePrice: salesPriceP,
+      amount: amountP,
   };
 
   try {

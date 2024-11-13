@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     height: 130,
     backgroundColor: "#f9f9f9",
-    marginHorizontal: 10,
+    marginHorizontal: 4,
     marginTop: 10,
     borderRadius: 10,
     overflow: "hidden",
@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
   contentData: {
     flexDirection: "column",
     width: "55%",
-    paddingHorizontal: 10,
+    paddingHorizontal: 5,
     justifyContent: "space-between",
     paddingVertical: 10,
   },
@@ -99,6 +99,9 @@ const styles = StyleSheet.create({
   dataRowPrice: {
     flexDirection: "row",
     justifyContent: "space-between",
+    overflow:'hidden',
+    flexWrap:'wrap'
+    
   },
   dataPriceBefore: {
     color: "#999",

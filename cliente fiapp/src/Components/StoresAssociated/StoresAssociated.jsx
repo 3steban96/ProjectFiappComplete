@@ -5,11 +5,11 @@ import { Card, Title, Avatar } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 export default function StoresAssociated({ store, customerId }) {
   const navigation = useNavigation(); 
-  const { nameStore, id: storeId } = store;
+  const { nameStore, id: storeId, phone } = store;
   
   const handleSelectedStore = () => {
     // Aquí también enviamos el nameStore
-    navigation.navigate('StoreSelected', { storeId, customerId, nameStore });
+    navigation.navigate('StoreSelected', { storeId, customerId, nameStore, phone });
   }
 
   return (

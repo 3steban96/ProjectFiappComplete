@@ -1,6 +1,7 @@
 const { Promotions, Products, ProductPromotions } = require('../../ConnectionDB/Db.js');
 const { Op,where,Sequelize}= require('sequelize');
 const cron = require('node-cron');
+
 async function getPromotionsWithProducts (req, res) {
   try {
     const storeId = req.user.storeId; // `storeId` debe estar en `req.user`
@@ -16,7 +17,7 @@ async function getPromotionsWithProducts (req, res) {
           model: Products,
           through: {
             model: ProductPromotions,
-            attributes: ['priceBeforePromotion'], // No queremos atributos de la tabla intermedia
+            attributes: ['pricePromotion'], 
           },
           attributes: ['id', 'nameProduct', 'salePrice', 'imgProduct'], // Incluir solo los atributos necesarios
         },
@@ -33,13 +34,13 @@ async function getPromotionsWithProducts (req, res) {
       endDate: promotion.endDate,
       products: promotion.Products.map(product => {
         // Obtener el precio antes de la promoción desde la tabla intermedia
-        const priceBeforePromotion = product.ProductPromotions.priceBeforePromotion;
+        const pricePromotion = product.ProductPromotions.pricePromotion;
 
         return {
           id: product.id,
           nameProduct: product.nameProduct,
           salePrice: product.salePrice,
-          priceBeforePromotion: priceBeforePromotion,
+          pricePromotion: pricePromotion,
           imgProduct: product.imgProduct ? product.imgProduct.toString('base64') : null, // Convertir imagen a base64
         };
       }),
@@ -51,6 +52,7 @@ async function getPromotionsWithProducts (req, res) {
     res.status(500).json({ message: 'Error fetching promotions with products' });
   }
 };
+
 const createPromotion = async (req, res) => {
   try {
     const storeId = req.user.storeId; // `storeId` debe estar en `req.user`
@@ -80,15 +82,12 @@ const createPromotion = async (req, res) => {
 
     // Crear la relación con los productos y guardar el precio original
     await Promise.all(products.map(async (product) => {
+      const newPrice = product.salePrice * (1 - discount / 100);
       await ProductPromotions.create({
         ProductId: product.id,
         PromotionId: promotion.id,
-        priceBeforePromotion: product.salePrice,
-      });
-
-      // Actualizar el precio del producto
-      const newPrice = product.salePrice * (1 - discount / 100);
-      await product.update({ salePrice: newPrice });
+        pricePromotion: newPrice,
+      });      
     }));
 
     res.status(201).json(promotion);
@@ -125,7 +124,7 @@ const revertProductPrices = async () => {
           });
   
           // Revertir el precio
-          await product.update({ salePrice: productPromotion.priceBeforePromotion });
+          await product.update({ salePrice: productPromotion.pricePromotion });
   
           // Eliminar la relación
           await productPromotion.destroy();

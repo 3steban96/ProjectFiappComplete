@@ -5,11 +5,13 @@ import { TextInput } from 'react-native'
 export default function ModalEditProducts({ isVisible, onClose, product, onEdit }) {
     const [purchasePrice, setPurchasePrice] = useState('');
     const [salePrice, setSalePrice] = useState('');
+    const [amount, setAmount] = useState('');
   
     useEffect(() => {
       if (product) {
         setPurchasePrice(product.purchasePrice.toString());
         setSalePrice(product.salePrice.toString());
+        setAmount(product.amount.toString());
       }
     }, [product]);
   
@@ -17,7 +19,8 @@ export default function ModalEditProducts({ isVisible, onClose, product, onEdit 
       const updatedProduct = {
         ...product,
         purchasePrice: parseFloat(purchasePrice),
-        salePrice: parseFloat(salePrice)
+        salePrice: parseFloat(salePrice),
+        amount: parseFloat(amount)
       };
       onEdit(updatedProduct);
     };
@@ -49,6 +52,16 @@ export default function ModalEditProducts({ isVisible, onClose, product, onEdit 
                       onChangeText={setSalePrice}
                       keyboardType="numeric"
                     />
+                  </View>
+                  <View style={styles.columnPriceProduct}>
+                    <Text style={styles.txtPriceProduct}>Disponible:</Text>
+                      <TextInput
+                        style={styles.textInput}
+                        placeholder='Disponible'
+                        value={amount}
+                        onChangeText={setAmount}
+                        keyboardType="numeric"
+                      />
                   </View>
                 </View>
               </View>

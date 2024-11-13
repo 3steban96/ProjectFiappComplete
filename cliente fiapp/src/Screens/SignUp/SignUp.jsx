@@ -38,7 +38,7 @@ export default function SignUp() {
   
   const handleSubmit = async () => {
     if (!fullNameC || !typeDocumentC || !idNumberC || !emailC || !phoneC || !passwordC || !confirmPasswordC) {
-      console.log("Datos",fullNameC,typeDocumentC,idNumberC,emailC,phoneC,passwordC,confirmPasswordC)
+      // console.log("Datos",fullNameC,typeDocumentC,idNumberC,emailC,phoneC,passwordC,confirmPasswordC)
       alert('Por favor, complete todos los campos.');
       return;
     }
@@ -56,9 +56,9 @@ export default function SignUp() {
       phoneC:  parseInt(phoneC, 10),
       passwordC: passwordC,
     };
-    console.log("Datos enviados:",data)
+    // console.log("Datos enviados:",data)
     try {
-      const response = await axios.post('http://192.168.0.6:3000/customer/register', data, {
+      const response = await axios.post('http://192.168.0.9:3000/customer/register', data, {
         headers: {
           'Content-Type': 'application/json',
         },

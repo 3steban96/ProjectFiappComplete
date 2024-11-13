@@ -18,14 +18,14 @@ export default function ModalCreditCustomer({ isVisible, onClose, storeId, idNum
       }
   
       const storeId = store.id;
-      console.log('Store ID:', storeId);     
-      console.log('Customer ID:', idNumber); 
-      console.log('Nombre cliente:', fullName); 
-      console.log('Store Credit Limit:', creditLimit);
+      // console.log('Store ID:', storeId);     
+      // console.log('Customer ID:', idNumber); 
+      // console.log('Nombre cliente:', fullName); 
+      // console.log('Store Credit Limit:', creditLimit);
   
       try {
         const response = await axios.post(
-          'http://192.168.0.6:3000/store/updateCreditLimit',
+          'http://192.168.0.9:3000/store/updateCreditLimit',
           {
               storeId,
               idNumber,

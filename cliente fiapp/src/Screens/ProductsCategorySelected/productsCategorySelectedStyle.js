@@ -57,8 +57,6 @@ const styles = StyleSheet.create({
       backgroundColor: 'white'
     },
     productCard: {
-      // resizeMode: "stretch",
-      // width: width*.9,
       backgroundColor: 'white',
       marginHorizontal: 10,
       marginTop: 10,
@@ -84,69 +82,93 @@ const styles = StyleSheet.create({
 
     },
     productDetails: {
-      width: '50%'
+      width: '70%',
+      flexWrap:'wrap',
+      overflow:'hidden',
+      height:'auto',
     },
     productTitle: {
       fontWeight: 'bold',
       fontSize: 18,
       marginBottom: 5
     },
+    promotionContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      flexWrap:'wrap',
+      overflow:'hidden'
+    },
+    originalPrice: {
+      textDecorationLine: 'line-through', // Aplica el tachado al precio original
+      color: 'grey',
+      marginRight: 5,
+      flexDirection:'row',
+      width:'100%'
+    },
+    promotionPrice: {
+      color: 'green', // Cambia el color para destacar el precio de promoción
+      fontWeight: 'bold',
+    },
     productPrice: {
       color: '#333',
-      marginBottom: 5
+      // marginBottom: 9
     },
-    productStock: {
-      color: '#7e7e7e'
-    },
-    productActions: {
-      flexDirection: 'column',
-      justifyContent: 'space-around',
-      alignItems: 'center'
-    },
-    actionButton: {
-      padding: 10,
-      borderRadius: 50
-    },
-    iconDelete: {
-      color: 'red',
-      fontSize: 20
-    },
-    iconEdit: {
-      color: '#DFD800',
-      fontSize: 20
-    },
-    supplierContainer: {
-      marginHorizontal: 20,
-      marginTop: 10
-    },
-    supplierButton: {
-      flexDirection: 'row',
-      backgroundColor: '#28a745',
-      justifyContent: 'center',
+    productAdded:{
+      position:'absolute',
+      top:0,
+      right:0,
+      padding: 5, // Espacio alrededor del texto para una mejor visualización
+      backgroundColor: "#1F8169", // Color de fondo para que resalte
       borderRadius: 5,
-      padding: 10,
-      marginBottom: 5
+      borderTopLeftRadius:0
+,      overflow:'hidden',
+      flexWrap:'wrap',
+      width:'10%',
+      alignContent:'center',
+      justifyContent:'center',
     },
-    supplierText: {
+
+    addToCartContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      margin: 10,
+      width:'auto',
+      justifyContent:'space-around',
+      flexWrap:'wrap',
+      overflow:'hidden',
+      height:'auto',
+    },
+    quantityInput: {
+      borderWidth: 1,
+      borderColor: '#ccc',
+      borderRadius: 5,
+      padding: 5,
+      marginRight: 10,
+      textAlign: 'center',
+    },
+    buttonAddProduct: {
+      backgroundColor: '#28a745',
+      paddingVertical: 8,
+      paddingHorizontal: 12,
+      borderRadius: 5,
+      // marginRight:20
+    },
+    textButtonAddProduct: {
+      color: '#fff',
       fontWeight: 'bold',
-      color: 'white',
-      marginLeft: 10
     },
-
-    rowBtnAddProduct:{
-      paddingBottom:30,
-      flexDirection:'row'
+    unitButton: {
+      padding: 8,
+      marginHorizontal: 4,
+      backgroundColor: '#ccc',
+      borderRadius: 5,
     },
-    btnAddProduct:{
-      backgroundColor:'#33BC82',
-      padding:10,
-      borderRadius:5
+    unitButtonSelected: {
+      backgroundColor: '#007bff',
     },
-    txtBtnAddProduct:{
-      fontWeight:'bold',
-      color:'white'
+    unitButtonText: {
+      color: '#fff',
     },
-
 });
 
 export default styles;

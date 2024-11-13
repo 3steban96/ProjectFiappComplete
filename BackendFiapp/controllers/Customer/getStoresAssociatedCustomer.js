@@ -10,7 +10,7 @@ async function getStoresAssociatedCustomer(req, res) {  // Asegúrate de pasar r
             include: {
                 model: Store,
                 as: 'stores',  // Asegúrate de usar el alias correcto si está definido en la asociación
-                attributes: ['id', 'nameStore']  // Solo los atributos necesarios de la tienda
+                attributes: ['id', 'nameStore', 'phone']  // Solo los atributos necesarios de la tienda
             }
         });
 

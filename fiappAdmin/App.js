@@ -15,6 +15,9 @@ import RecordPurchase from './src/Screens/RecordPurchase/RecordPurchase.jsx';
 import { UserProvider } from './src/UserContext/UserContext.js';
 import QRScannerScreen from './src/Screens/Components/QrScanner/QRScanner.jsx';
 import FabButtondProfile from './src/Screens/Components/FabButtonsProfile/FabButtonsProfile.jsx';
+import ForgotPassword from './src/Screens/ForgotPassword/ForgotPassword.jsx';
+import CodeVerification from './src/Screens/CodeVerification/CodeVerification.jsx';
+import ResetPassword from './src/Screens/ResetPassword/ResetPassword.jsx';
 
 const Stack = createStackNavigator();
 
@@ -25,6 +28,9 @@ export default function App() {
       <Stack.Navigator>
         <Stack.Screen name="Login" options={{ headerShown: false }} component={Login} />
         <Stack.Screen name="SignIn" options={{ headerShown: false }} component={SignIn} />
+        <Stack.Screen name="ForgotPassword" options={{ headerShown: false }} component={ForgotPassword} />
+        <Stack.Screen name="CodeVerification" options={{ headerShown: false }} component={CodeVerification} />
+        <Stack.Screen name="ResetPassword" options={{ headerShown: false }} component={ResetPassword} />
         <Stack.Screen name="AddProduct" options={{ headerShown: false }} component={AddProduct} />
         <Stack.Screen name="AddCustomer" options={{ headerShown: false }} component={AddCustomer} />
         <Stack.Screen name="DetailsCustomer" options={{ headerShown: false }} component={DetailsCustomer} />

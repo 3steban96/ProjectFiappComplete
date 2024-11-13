@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
       flexDirection: 'row',
       width: '100%',
       paddingHorizontal: 20,
-      paddingTop: 20,
+      paddingTop: 10,
       paddingBottom: 10,
     },
     contentSCProduct: {
@@ -76,12 +76,21 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       justifyContent: 'space-between'
     },
+    lowStock: {
+      backgroundColor: 'rgba(255, 238, 159, 0.6)', // Fondo rojo claro
+      borderColor: 'yellow',
+      borderWidth: 1,
+    },
+    outOfStock: {
+      backgroundColor: 'rgba(255, 0, 0, 0.1)', // Fondo rojo claro para sin existencias
+      borderColor: 'red',
+      borderWidth: 1,
+    },
     productImage: {
       width: 70,
       height: 80,
       borderRadius: 5,
       resizeMode: "contain",
-
     },
     productDetails: {
       width: '50%'
@@ -114,6 +123,23 @@ const styles = StyleSheet.create({
     iconEdit: {
       color: '#DFD800',
       fontSize: 20
+    },    
+    selectedChip: {
+      backgroundColor: 'rgba(0, 0, 255, 0.2)', // Cambia el color de fondo cuando esté seleccionado
+      borderColor: 'blue',
+      borderWidth: 1,
+    },
+    chipWarning: {
+      backgroundColor: 'red',
+    },
+    iconWarning: {
+      color: 'white',
+    },
+    chipOutOfStock: {
+      backgroundColor: '#fed510', 
+    },
+    iconOutOfStock: {
+      color: 'white',
     },
     supplierContainer: {
       marginHorizontal: 20,

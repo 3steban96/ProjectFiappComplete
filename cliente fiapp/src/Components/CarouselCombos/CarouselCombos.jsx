@@ -30,9 +30,9 @@ const ComboCarousel = ({ storeId }) => {
 
           let url;
           if (storeId) {
-            url = `http://192.168.0.6:3000/customer/${customerId}/combos/store/${storeId}`;
+            url = `http://192.168.0.9:3000/customer/${customerId}/combos/store/${storeId}`;
           } else {
-            url = `http://192.168.0.6:3000/customer/${customerId}/getCombosCustomerAllStore`;
+            url = `http://192.168.0.9:3000/customer/${customerId}/getCombosCustomerAllStore`;
           }
 
           const response = await axios.get(url, {
@@ -94,7 +94,7 @@ const ComboCarousel = ({ storeId }) => {
         </Card>
       )}
       itemWidth={width - 20}
-      onSnapToItem={(index) => console.log('Current index:', index)}
+      // onSnapToItem={(index) => console.log('Current index:', index)}
       autoplay
       // paginationType="circle"
       // paginationPosition="bottom"
